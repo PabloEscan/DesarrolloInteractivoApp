@@ -1,30 +1,73 @@
-import { useState } from 'react';
-import './CrearTarea.css';
+import { useState, useEffect } from 'react';
 
-export default function CrearTarea({ alAgregarTarea }) {
-    // Estado local para guardar lo que el usuario escribe en el input
+export default function CrearTarea({ alAgregarTarea, tareaAEditar, alActualizarTarea, onCancelarEdicion }) {
     const [titulo, setTitulo] = useState('');
-    // Estado opcional para mostrar un mensaje de carga mientras se guarda en la API
+    const [fecha, setFecha] = useState('');
     const [guardando, setGuardando] = useState(false);
+    const [error, setError] = useState('');
 
-    // Función que se ejecuta al enviar el formulario (onSubmit)
+    useEffect(() => {
+        if (tareaAEditar) {
+            setTitulo(tareaAEditar.title || '');
+            
+            if (tareaAEditar.fecha) {
+                const [dia, mes, anio] = tareaAEditar.fecha.split('/');
+                setFecha(`${anio}-${mes}-${dia}`);
+            } else {
+                setFecha('');
+            }
+        } else {
+            setTitulo('');
+            setFecha('');
+        }
+        setError('');
+    }, [tareaAEditar]);
+
+    const obtenerFechaHoy = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const fechaMinima = obtenerFechaHoy();
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        setError('');
 
-        // Validación básica: evitar enviar campos vacíos o con solo espacios
-        if (!titulo.trim()) return;
+        if (!titulo.trim()) {
+            setError('El título de la tarea no puede estar vacío.');
+            return;
+        }
+
+        if (!fecha) {
+            setError('Por favor, selecciona una fecha.');
+            return;
+        }
 
         setGuardando(true);
 
-        // Petición POST a la API pública
-        fetch('http://localhost:3000/tareas', {
+        if (tareaAEditar) {
+            alActualizarTarea(tareaAEditar.id, { titulo, fecha }, () => {
+                setGuardando(false);
+            });
+            return;
+        }
+
+        const [anio, mes, dia] = fecha.split('-');
+        const fechaFormateada = `${dia}/${mes}/${anio}`;
+
+        fetch('https://apitareas-6fki.onrender.com/tareas', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 title: titulo,
-                completed: false
+                completed: false,
+                fecha: fechaFormateada
             })
         })
             .then((respuesta) => {
@@ -34,19 +77,17 @@ export default function CrearTarea({ alAgregarTarea }) {
                 return respuesta.json();
             })
             .then((nuevaTarea) => {
-                console.log('Tarea creada con éxito:', nuevaTarea);
-                
-                // Si pasaste la función callback desde el componente padre, actualiza el estado principal
                 if (alAgregarTarea) {
                     alAgregarTarea(nuevaTarea);
                 }
 
-                // Limpiar el campo de entrada
                 setTitulo('');
+                setFecha('');
                 setGuardando(false);
             })
-            .catch((error) => {
-                console.error('Error al crear la tarea:', error);
+            .catch((err) => {
+                console.error('Error al crear la tarea:', err);
+                setError('Hubo un error al conectar con el servidor.');
                 setGuardando(false);
             });
     };
@@ -61,13 +102,40 @@ export default function CrearTarea({ alAgregarTarea }) {
                 onChange={(e) => setTitulo(e.target.value)}
                 disabled={guardando}
             />
-            <button 
-                type="submit" 
-                className="boton-crear"
+            
+            <input
+                type="date"
+                className="input-tarea"
+                value={fecha}
+                min={fechaMinima}
+                onChange={(e) => setFecha(e.target.value)}
                 disabled={guardando}
-            >
-                {guardando ? 'Guardando...' : 'Agregar Tarea'}
-            </button>
+            />
+
+            {error && <p className="mensaje-error">{error}</p>}
+
+            <div className="botones-formulario" style={{ display: 'flex', gap: '8px' }}>
+                <button 
+                    type="submit" 
+                    className="boton-crear"
+                    disabled={guardando}
+                    style={{ flex: 1 }}
+                >
+                    {guardando ? 'Guardando...' : (tareaAEditar ? 'Guardar Cambios' : 'Agregar Tarea')}
+                </button>
+
+                {tareaAEditar && (
+                    <button 
+                        type="button" 
+                        className="boton-cancelar-edicion"
+                        onClick={onCancelarEdicion}
+                        disabled={guardando}
+                        style={{ background: '#ccc', border: 'none', padding: '8px', cursor: 'pointer' }}
+                    >
+                        Cancelar
+                    </button>
+                )}
+            </div>
         </form>
     );
 }
