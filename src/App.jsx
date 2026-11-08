@@ -6,7 +6,7 @@ import './App.css';
 export default function App() {
     const [tareas, setTareas] = useState([]);
     const [cargando, setCargando] = useState(true);
-    
+
     const [tareaAEditar, setTareaAEditar] = useState(null);
 
     useEffect(() => {
@@ -27,8 +27,12 @@ export default function App() {
     };
 
     const actualizarTareaEnAPI = (id, datosActualizados, onTerminado) => {
-        const [anio, mes, dia] = datosActualizados.fecha.split('-');
-        const fechaFormateada = `${dia}/${mes}/${anio}`;
+        let fechaFormateada = datosActualizados.fecha;
+
+        if (datosActualizados.fecha && datosActualizados.fecha.includes('-')) {
+            const [anio, mes, dia] = datosActualizados.fecha.split('-');
+            fechaFormateada = `${dia}/${mes}/${anio}`;
+        }
 
         const datosParaEnviar = {
             title: datosActualizados.titulo,
@@ -38,7 +42,7 @@ export default function App() {
         console.log("Enviando PATCH a la API con:", datosParaEnviar);
 
         fetch(`https://apitareas-6fki.onrender.com/tareas/${id}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -53,11 +57,11 @@ export default function App() {
             })
             .then((tareaActualizada) => {
                 console.log("Respuesta exitosa de la API (tarea actualizada):", tareaActualizada);
-                
+
                 setTareas((tareasAnteriores) =>
                     tareasAnteriores.map((t) => (t.id === id ? tareaActualizada : t))
                 );
-                
+
                 setTareaAEditar(null);
                 if (onTerminado) onTerminado();
             })
@@ -86,7 +90,7 @@ export default function App() {
         const nuevoEstado = !estadoActual;
 
         fetch(`https://apitareas-6fki.onrender.com/tareas/${id}`, {
-            method: 'PATCH', 
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -117,20 +121,20 @@ export default function App() {
             <div className="layout-principal">
                 <aside className="aside-formulario">
                     <h2>{tareaAEditar ? 'Editar Tarea' : 'Nueva Tarea'}</h2>
-                    <CrearTarea 
-                        alAgregarTarea={agregarTareaAlEstado} 
+                    <CrearTarea
+                        alAgregarTarea={agregarTareaAlEstado}
                         tareaAEditar={tareaAEditar}
                         alActualizarTarea={actualizarTareaEnAPI}
                         onCancelarEdicion={() => setTareaAEditar(null)}
                     />
                 </aside>
-                
+
                 <main className="seccion-tareas">
-                    <ListarTareas 
-                        tareas={tareas} 
-                        cargando={cargando} 
-                        alEliminarTarea={eliminarTarea} 
-                        alAlternarEstado={alternarCompletada} 
+                    <ListarTareas
+                        tareas={tareas}
+                        cargando={cargando}
+                        alEliminarTarea={eliminarTarea}
+                        alAlternarEstado={alternarCompletada}
                         alIniciarEdicion={setTareaAEditar}
                     />
                 </main>
