@@ -1,0 +1,13 @@
+.contenedor-principal {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.titulo-principal {
+    text-align: center;
+    color: #2d3748;
+    margin-bottom: 24px;
+    font-size: 2rem;
+}
