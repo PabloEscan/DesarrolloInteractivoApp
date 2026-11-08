@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import ListarTareas from './components/ListarTareas';
 import CrearTarea from './components/CrearTarea';
+import FiltroTareas from './components/FiltroTareas';
+import { filtrarTareas } from './utils/filtrarTareas';
 import './App.css';
 
 export default function App() {
@@ -8,6 +10,9 @@ export default function App() {
     const [cargando, setCargando] = useState(true);
 
     const [tareaAEditar, setTareaAEditar] = useState(null);
+
+    // Filtro activo: 'todas', 'pendientes' o 'hechas'
+    const [filtro, setFiltro] = useState('todas');
 
     useEffect(() => {
         fetch('https://apitareas-6fki.onrender.com/tareas')
@@ -114,6 +119,9 @@ export default function App() {
             });
     };
 
+    // Se calcula en cada render a partir de las tareas y el filtro activo
+    const tareasFiltradas = filtrarTareas(tareas, filtro);
+
     return (
         <div className="contenedor-principal">
             <h1 className="titulo-principal">Mi Aplicación de Tareas</h1>
@@ -130,8 +138,13 @@ export default function App() {
                 </aside>
 
                 <main className="seccion-tareas">
+                    <FiltroTareas
+                        filtroActual={filtro}
+                        alCambiarFiltro={setFiltro}
+                    />
+
                     <ListarTareas
-                        tareas={tareas}
+                        tareas={tareasFiltradas}
                         cargando={cargando}
                         alEliminarTarea={eliminarTarea}
                         alAlternarEstado={alternarCompletada}

@@ -379,3 +379,45 @@
     }
 }
 
+
+/* ==========================================
+   5. FILTRO DE TAREAS (Todas / Pendientes / Hechas)
+   ================================---------- */
+.filtro-tareas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filtro-tareas button {
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--color-texto);
+    background-color: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.filtro-tareas button:hover {
+    background-color: #f4ebd0;
+}
+
+.filtro-tareas button:active {
+    transform: scale(0.97);
+}
+
+/* El botón del filtro activo: se usa el mismo atributo de accesibilidad */
+.filtro-tareas button[aria-pressed="true"] {
+    background-color: var(--color-acento);
+    border-color: var(--color-acento);
+    color: var(--color-blanco);
+}
+
+.filtro-tareas button:focus-visible {
+    outline: 3px solid rgba(188, 108, 37, 0.4);
+    outline-offset: 2px;
+}
