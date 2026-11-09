@@ -44,7 +44,8 @@ export default function App() {
             fecha: fechaFormateada
         };
 
-        console.log("Enviando PATCH a la API con:", datosParaEnviar);
+        setErrorAccion(null);
+        setCargandoAccion(true);
 
         fetch(`https://apitareas-6fki.onrender.com/tareas/${id}`, {
             method: 'PUT',
@@ -54,25 +55,26 @@ export default function App() {
             body: JSON.stringify(datosParaEnviar)
         })
             .then((respuesta) => {
-                console.log("Estado de la respuesta HTTP:", respuesta.status);
                 if (!respuesta.ok) {
-                    throw new Error('Error al actualizar la tarea en el servidor');
+                    throw new Error(`Error en el servidor: ${respuesta.status} (${respuesta.statusText})`);
                 }
                 return respuesta.json();
             })
             .then((tareaActualizada) => {
-                console.log("Respuesta exitosa de la API (tarea actualizada):", tareaActualizada);
-
                 setTareas((tareasAnteriores) =>
                     tareasAnteriores.map((t) => (t.id === id ? tareaActualizada : t))
                 );
-
                 setTareaAEditar(null);
                 if (onTerminado) onTerminado();
             })
             .catch((error) => {
                 console.error('Error detallado al actualizar la tarea:', error);
-                if (onTerminado) onTerminado();
+                
+                setErrorAccion(error.message || 'No se pudo conectar con el servidor.');
+                
+            })
+            .finally(() => {
+                setCargandoAccion(false);
             });
     };
 
