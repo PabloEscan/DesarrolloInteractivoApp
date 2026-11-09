@@ -9,5 +9,3 @@ export function filtrarTareas(tareas, filtro) {
 
     return tareas;
 }
-
-
