@@ -22,9 +22,9 @@ describe('filtrarTareas', () => {
         ]);
     });
 
-    it('con el filtro "todas" decuelve todas las tareas', () => {
+    it('con el filtro "todas" devuelve todas las tareas', () => {
         const resultado = filtrarTareas(tareas, 'todas');
-        expect(resultado).toEqual(tareas)
+        expect(resultado).toEqual(tareas);
     });
 
 });
