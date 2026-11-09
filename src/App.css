@@ -421,3 +421,16 @@
     outline: 3px solid rgba(188, 108, 37, 0.4);
     outline-offset: 2px;
 }
+
+/* ==========================================
+   6. MENSAJE DE ERROR DE LA API
+   ========================================== */
+.mensaje-error-api {
+    margin: 0;
+    padding: 12px 16px;
+    background-color: #fdecea;
+    color: #8a1c1c;
+    border: 1px solid #f5c2c0;
+    border-radius: 8px;
+    font-weight: 600;
+}

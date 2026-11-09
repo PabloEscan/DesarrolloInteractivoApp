@@ -785,7 +785,7 @@ new Date("2026-11-08");
 // En Ecuador: Sat Nov 07 2026 19:00:00 GMT-0500
 ```
 
-**Cómo se soluciona:** se reportó a Juan José, responsable de `ListarTareas.jsx`. La corrección consiste en crear la fecha con el constructor que recibe año, mes y día por separado, que sí usa la **hora local**. El mes se resta en 1 porque en JavaScript los meses van de 0 (enero) a 11 (diciembre):
+**Cómo se solucionó:** se reportó a Juan José, quien lo corrigió en la función `esFechaVencida` de `ItemTarea.jsx`. La corrección consiste en crear la fecha con el constructor que recibe año, mes y día por separado, que sí usa la **hora local**. El mes se resta en 1 porque en JavaScript los meses van de 0 (enero) a 11 (diciembre):
 
 ```js
 const [dia, mes, anio] = fechaStr.split('/');

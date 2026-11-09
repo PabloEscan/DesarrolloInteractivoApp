@@ -8,6 +8,8 @@ import './App.css';
 export default function App() {
     const [tareas, setTareas] = useState([]);
     const [cargando, setCargando] = useState(true);
+    // Mensaje de error para mostrar al usuario si falla una petición a la API
+    const [errorAccion, setErrorAccion] = useState(null);
 
     const [tareaAEditar, setTareaAEditar] = useState(null);
 
@@ -16,13 +18,20 @@ export default function App() {
 
     useEffect(() => {
         fetch('https://apitareas-6fki.onrender.com/tareas')
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`Error en el servidor: ${res.status}`);
+                }
+                return res.json();
+            })
             .then((data) => {
                 setTareas(data);
-                setCargando(false);
             })
             .catch((err) => {
                 console.error('Error al obtener tareas:', err);
+                setErrorAccion('No se pudieron cargar las tareas. Revisa tu conexión e intenta de nuevo.');
+            })
+            .finally(() => {
                 setCargando(false);
             });
     }, []);
@@ -45,10 +54,10 @@ export default function App() {
         };
 
         setErrorAccion(null);
-        setCargandoAccion(true);
 
+        // PATCH modifica solo los campos enviados (title y fecha) y conserva "completed"
         fetch(`https://apitareas-6fki.onrender.com/tareas/${id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -65,20 +74,20 @@ export default function App() {
                     tareasAnteriores.map((t) => (t.id === id ? tareaActualizada : t))
                 );
                 setTareaAEditar(null);
-                if (onTerminado) onTerminado();
             })
             .catch((error) => {
                 console.error('Error detallado al actualizar la tarea:', error);
-                
                 setErrorAccion(error.message || 'No se pudo conectar con el servidor.');
-                
             })
             .finally(() => {
-                setCargandoAccion(false);
+                // Se ejecuta tanto si salió bien como si falló: el formulario deja de mostrar "Guardando..."
+                if (onTerminado) onTerminado();
             });
     };
 
     const eliminarTarea = (id) => {
+        setErrorAccion(null);
+
         fetch(`https://apitareas-6fki.onrender.com/tareas/${id}`, {
             method: 'DELETE',
         })
@@ -90,11 +99,13 @@ export default function App() {
             })
             .catch((error) => {
                 console.error('Error al eliminar la tarea:', error);
+                setErrorAccion('No se pudo eliminar la tarea. Intenta de nuevo.');
             });
     };
 
     const alternarCompletada = (id, estadoActual) => {
         const nuevoEstado = !estadoActual;
+        setErrorAccion(null);
 
         fetch(`https://apitareas-6fki.onrender.com/tareas/${id}`, {
             method: 'PATCH',
@@ -118,6 +129,7 @@ export default function App() {
             })
             .catch((error) => {
                 console.error('Error al actualizar la tarea:', error);
+                setErrorAccion('No se pudo cambiar el estado de la tarea. Intenta de nuevo.');
             });
     };
 
@@ -140,6 +152,10 @@ export default function App() {
                 </aside>
 
                 <main className="seccion-tareas">
+                    {errorAccion && (
+                        <p className="mensaje-error-api" role="alert">{errorAccion}</p>
+                    )}
+
                     <FiltroTareas
                         filtroActual={filtro}
                         alCambiarFiltro={setFiltro}
