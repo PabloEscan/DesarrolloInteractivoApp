@@ -941,9 +941,26 @@ npm run dev
 
 Esto último puede agregar unos pocos segundos al arranque del entorno de desarrollo.
 
+## Tabla de medidas
+
+| Métrica | Descripción / Comando | Valor Medido |
+| :--- | :--- | :--- |
+| **Tiempo de configuración inicial** | Desde instalar hasta ver la app corriendo (min) | **2:26 min** |
+| **Líneas de código de la app (LOC)** | Conteo en carpeta frontend (`npx cloc src`) | **844 LOC** |
+| **Tamaño del build de producción** | Peso de la carpeta `dist` tras `npm run build` (KB) | **241 KB** |
+| **Puntaje de rendimiento Lighthouse** | Prueba en Chrome DevTools (Modo Móvil) | **56** |
+| **Horas totales del grupo** | Suma de horas invertidas por integrante | **6.33 horas** |
+| **Dificultad percibida** | Promedio del equipo (Escala de 1 a 5) | **4** |
+
 Evidencias de la creación del proyecto:
+
+![Configuración de la prueba con LightHouse](./ImagenesDocumentacion/PruebaLightHouse.png)
+
+![Puntaje obtenido en LightHouse](./ImagenesDocumentacion/PruebaLightHousePuntaje.png)
 
 ![Ingreso para instalación de npm](./ImagenesDocumentacion/ingresoProyecto.png)
 
 ![Proyecto Inciiado](./ImagenesDocumentacion/cronometro.png)
+
+
 
