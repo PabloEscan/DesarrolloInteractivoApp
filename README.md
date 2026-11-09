@@ -979,7 +979,7 @@ Usamos herramientas de IA como apoyo de estudio, siguiendo las indicaciones del 
 | Gemini (Google) | Juan José Abril | Tutor conceptual de React; análisis de arquitectura; resolución de errores de entorno; guía para medir las métricas del proyecto |
 | *(pendiente)* | Pablo Escandón | *(pendiente: completar)* |
 
-**Cuaderno de NotebookLM:** *(pendiente: agregar el enlace)*
+**Cuaderno de NotebookLM:** (https://notebook.google.com/notebook/4fc7f8e9-1f18-4b14-869f-44893834791b)
 
 ## Mateo Namicela
 
@@ -1032,4 +1032,18 @@ Usé la IA como asistente técnico y tutor conceptual durante el desarrollo del 
 
 ## Pablo Escandón
 
-*(pendiente: completar)*
+Use a gemini como un tutor personal, permitiendo que vea mi proceso en el código que iba realizando. No pedía el código directamente, sino que me explicara que necesitaba cambiar o realizar.
+
+### Consulta y justificación
+
+| Consulta | Qué obtuve | Razón de uso |
+|---|---|---|
+| Funciones HTTP (POST, PUT, PATCH, DELETE) para la manipulación de datos en un JSON | Explicación detallada de los métodos HTTP, diferencias entre reemplazo total (`PUT`) y parcial (`PATCH`), y consumo de la API simulada JSONPlaceholder como entorno de pruebas | Aclarar la estructura correcta de las peticiones REST y la sintaxis para alterar el JSON, utilizando un resumen didáctico que aceleró la comprensión de estos métodos |
+| Integración y configuración de la librería FullCalendar en React scaffolded con Vite | Guía paso a paso para la instalación de dependencias `npm` (`@fullcalendar/react`, `@fullcalendar/daygrid`) y plantilla inicial para renderizar el componente básico | Resolver inconsistencias en la instalación de paquetes causadas por ambigüedades en la documentación oficial de FullCalendar dentro del entorno de Vite |
+| Arquitectura y estructura de archivos en un proyecto scaffolded con React y Vite | Descripción de la jerarquía de directorios (`src`, `public`, `node_modules`), propósito de `main.jsx`/`App.jsx`, y delimitación de archivos editables sin romper el build | Comprender el flujo de renderizado del DOM, establecer las buenas prácticas de organización de componentes y reconocer los archivos clave que impactan en la vista final |
+| Estrategias de control de versiones con Git para alternar ramas sin perder el progreso de trabajo (`git stash` / `checkout`) | Comandos y flujo de trabajo en VS Code para pausar o resguardar cambios locales sin generar conflictos al cambiar entre ramas de trabajo | Evitar colisiones e incompatibilidades de código al trabajar en paralelo sobre la rama independiente del frontend y los avances gráficos de las sesiones de clase |
+| Diagnóstico de fallos en la persistencia y actualización de datos en el cliente/JSON | Formas de depurar las peticiones de actualización y verificación del flujo de estados en la aplicación frontend | Identificar si las fallas de actualización provenían de la lógica del cliente o si se debían a las limitaciones operativas de la API mock empleada en ese momento |
+
+### Conclución personal
+
+El uso de la IA como un tutor conceptual exigiendo explicaciones previas y validando con pruebas unitarias y documentación oficial. Evitó la dependencia ciega de código preescrito. Permitiéndonos identificar problemas de forma consciente, además de permitir que desarrollemos un código que conocemos.
