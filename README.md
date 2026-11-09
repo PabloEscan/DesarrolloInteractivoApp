@@ -946,7 +946,7 @@ Esto último puede agregar unos pocos segundos al arranque del entorno de desarr
 | Métrica | Descripción / Comando | Valor Medido |
 | :--- | :--- | :--- |
 | **Tiempo de configuración inicial** | Desde instalar hasta ver la app corriendo (min) | **2:26 min** |
-| **Líneas de código de la app (LOC)** | Conteo en carpeta frontend (`npx cloc src`) | **844 LOC** |
+| **Líneas de código de la app (LOC)** | Conteo de la carpeta `src` con `sloc` (`npx cloc src` no funcionó en Windows porque `cloc` necesita Perl instalado) | **844 LOC** |
 | **Tamaño del build de producción** | Peso de la carpeta `dist` tras `npm run build` (KB) | **241 KB** |
 | **Puntaje de rendimiento Lighthouse** | Prueba en Chrome DevTools (Modo Móvil) | **56** |
 | **Horas totales del grupo** | Suma de horas invertidas por integrante | **6.33 horas** |
@@ -964,3 +964,72 @@ Evidencias de la creación del proyecto:
 
 
 
+
+---
+
+# Uso de IA
+
+Usamos herramientas de IA como apoyo de estudio, siguiendo las indicaciones del enunciado. Todo lo que aparece en el informe se verificó en la documentación oficial y se probó en nuestro propio código.
+
+## Herramientas utilizadas
+
+| Herramienta | Integrante | Para qué se usó |
+|---|---|---|
+| Claude (Anthropic) | Mateo Namicela | Tutor para aprender Git, APIs, React y pruebas; revisión de código; fusión de ramas; detección y corrección de errores; esquema y revisión del bloque 6 |
+| Gemini (Google) | Juan José Abril | Tutor conceptual de React; análisis de arquitectura; resolución de errores de entorno; guía para medir las métricas del proyecto |
+| *(pendiente)* | Pablo Escandón | *(pendiente: completar)* |
+
+**Cuaderno de NotebookLM:** *(pendiente: agregar el enlace)*
+
+## Mateo Namicela
+
+Le pedí a Claude que actuara como tutor personal: que me explicara cada concepto antes de usarlo, que me hiciera preguntas para comprobar que lo entendía y que me corrigiera.
+
+### Consultas más importantes
+
+Las consultas se presentan como un resumen técnico de lo que pregunté; el sentido de cada una es el original.
+
+| Consulta (resumen técnico) | Qué obtuve | Cómo lo verifiqué |
+|---|---|---|
+| ¿JSONPlaceholder es una API REST real? ¿Qué alternativa conviene si la app debe persistir los cambios y estar desplegada con URL pública? | Qué es una API REST y sus métodos HTTP; por qué JSONPlaceholder simula las escrituras sin guardarlas, y por qué JSON Server en `localhost` no sirve para la app publicada | Guía oficial de JSONPlaceholder y la API del grupo desplegada en Render |
+| Al alternar el estado, una tarea con la fecha de hoy pasa de "Completada" a "Fallida" en lugar de "Pendiente". ¿Cuál es la causa? | Diagnóstico: `new Date("AAAA-MM-DD")` se interpreta en UTC y, en UTC−5, la fecha retrocede al día anterior | Lo reproduje con la zona horaria de Ecuador; Juan José aplicó la corrección (sección 6.6) |
+| Vitest devuelve `[PARSE_ERROR] Unexpected JSX expression` al ejecutar la prueba del componente. ¿Por qué? | La extensión `.js` hace que Vite no procese JSX; el archivo debía ser `.jsx` | Renombré el archivo y las pruebas pasaron (sección 6.6) |
+| La rama `frontend` no comparte historial con `main`. ¿Cómo integrarla junto con la rama `pruebas` sin perder trabajo? | Fusión con `--allow-unrelated-histories`, resolución de conflictos y conexión del filtro en `App.jsx` | Ejecuté las pruebas y la app antes del push, y revisé que no se perdieran cambios de los demás |
+| Revisión de `App.jsx`: la edición de tareas falla con `setErrorAccion is not defined` | Declaración del estado faltante, cambio de `PUT` a `PATCH` para no perder `completed`, `onTerminado` en `finally` y mensajes de error visibles | Probé editar, eliminar y cambiar el estado, con la API respondiendo bien y con error |
+| Esquema de contenidos para el bloque 6 (pruebas) según la rúbrica | Estructura por subsecciones e ideas clave de cada una | Comprobé los datos en vitest.dev, testing-library.com y angular.dev (sección 6.8) |
+
+### Qué hice yo y qué hizo la IA
+
+- **Lo hice yo, siguiendo las explicaciones:** la configuración de Vitest, la función `filtrarTareas`, la primera prueba unitaria, y la segunda y la tercera **sin ayuda del código** (Claude solo me dio las instrucciones y luego revisó). También rompí la función a propósito para comprobar que las pruebas detectan errores, y resolví el error de la extensión `.js` / `.jsx`.
+- **Lo hizo Claude y yo lo revisé:** el código del componente `FiltroTareas` y de su prueba (explicado línea por línea), la conexión del filtro en `App.jsx`, la fusión de ramas, la corrección de `App.jsx` y la redacción de las secciones 6.3 y 6.5. Las demás subsecciones del bloque 6 las redacté a partir de un esquema de ideas de Claude, y él corrigió errores de tipeo y el orden del informe.
+- **Lo que aprendí a verificar:** no confiar en una afirmación sin revisar la fuente, y no confiar en una prueba sin verla fallar primero.
+
+## Juan José Abril
+
+Usé la IA como asistente técnico y tutor conceptual durante el desarrollo del proyecto.
+
+### Áreas en las que se usó
+
+| Área | Para qué se usó |
+|---|---|
+| Comprensión conceptual y sintaxis | Explicación del funcionamiento de `useState` y `useEffect`, y de la gestión de *callbacks* (`onTerminado`) entre componentes |
+| Análisis de arquitectura | Evaluación técnica del manejo del estado en memoria (RAM) frente a escenarios con varios usuarios |
+| Resolución de errores de entorno | Depuración de fallos en la consola de Windows. Al ejecutar `npx cloc src` apareció el error `'perl' no se reconoce como un comando interno o externo`: `cloc` necesita Perl, que no estaba instalado, así que las líneas de código se contaron con `sloc` |
+| Medición de métricas de software | Guía paso a paso para medir el tiempo de configuración, las líneas de código (LOC), el peso del build de producción y la auditoría de rendimiento con Lighthouse |
+
+### Consultas realizadas
+
+| Tema | Consulta (textual) |
+|---|---|
+| *Callbacks* | "¿Qué significa la función `onTerminado` en mi código y por qué se pasa como parámetro?" |
+| `useEffect` | "¿Cómo funciona `useEffect` para hacer el `fetch` a la API y por qué lleva un arreglo vacío `[]` al final?" |
+| Manejo de memoria | "¿Es recomendado pedir los datos una vez a la API y luego manejar todo a nivel de RAM?" |
+| Concurrencia con varios usuarios | "¿Qué ocurre si dos personas crean o modifican tareas al mismo tiempo desde distintas computadoras?" |
+| Error de `cloc` en Windows | "Me sale el error: `'perl' no se reconoce como un comando interno o externo` al ejecutar `npx cloc src`." |
+| Error de `npm install` | "Tengo el error `npm error code ENOENT: Could not read package.json` al intentar ejecutar los comandos." |
+| Guía de mediciones | "¿Cómo se miden las métricas solicitadas para el proyecto (LOC, build, setup, Lighthouse)?" |
+| Herramienta para Lighthouse | "Hice la prueba de rendimiento en Microsoft Edge, ¿tiene que ser necesariamente en Google Chrome?" |
+
+## Pablo Escandón
+
+*(pendiente: completar)*
